@@ -3,17 +3,17 @@ import Sidebar from "./Sidebar";
 
 function MainLayout({ children }) {
   return (
-    <Box sx={{ display: "flex" }}>
-
+    <Box sx={{ display: "flex", width: "100%", minHeight: "100vh" }}>
       <Sidebar />
 
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
+          flex: 1,
+          minWidth: 0,
           p: 3,
+          minHeight: "100vh",
           backgroundColor: "#f5f5f5",
-          height: "100vh",
         }}
       >
         {children}
