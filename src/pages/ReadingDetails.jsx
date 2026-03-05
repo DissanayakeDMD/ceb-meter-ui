@@ -121,7 +121,7 @@ export default function ReadingDetails() {
           accountNumber: accountNumber === 'All' ? 'All' : accountNumber,
         },
       });
-      debugger;
+      
       const data = Array.isArray(res.data) ? res.data : [];
       setRows(data.map(normalizeReadingRow));
     } catch {
