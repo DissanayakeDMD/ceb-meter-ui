@@ -65,11 +65,13 @@ export default function ReadingDetails() {
         const data = Array.isArray(res.data) ? res.data : [];
         if (!cancelled) {
           setBillCycles(data);
-          if (data.length > 0 && !selectedBillCycle) {
-            setSelectedBillCycle(data[0].billCycle);
+          if (data.length > 0) {
+            setSelectedBillCycle((prev) =>
+              prev === '' || prev === null || prev === undefined ? data[0].billCycle : prev
+            );
           }
         }
-      } catch (e) {
+      } catch {
         if (!cancelled) setError('Failed to load bill cycles.');
       } finally {
         if (!cancelled) setBillCyclesLoading(false);
@@ -120,7 +122,7 @@ export default function ReadingDetails() {
       });
       const data = Array.isArray(res.data) ? res.data : [];
       setRows(data.map(normalizeReadingRow));
-    } catch (e) {
+    } catch {
       setError('Failed to fetch readings. Please try again.');
     } finally {
       setLoading(false);
