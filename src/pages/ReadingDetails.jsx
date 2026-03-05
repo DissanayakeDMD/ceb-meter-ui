@@ -20,6 +20,7 @@ const GET_READINGS_API = 'https://localhost:7221/api/readings/GetReadings';
 
 /** Map API response to table row shape (support both camelCase and PascalCase from .NET) */
 function normalizeReadingRow(raw) {
+  debugger;
   if (!raw || typeof raw !== 'object') return raw;
   return {
     accountNumber: raw.accountNumber ?? raw.AccountNumber,
@@ -120,6 +121,7 @@ export default function ReadingDetails() {
           accountNumber: accountNumber === 'All' ? 'All' : accountNumber,
         },
       });
+      debugger;
       const data = Array.isArray(res.data) ? res.data : [];
       setRows(data.map(normalizeReadingRow));
     } catch {
