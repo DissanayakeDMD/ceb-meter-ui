@@ -18,6 +18,32 @@ import ReadingTable from '../components/ReadingTable';
 const BILL_CYCLES_API = 'https://localhost:7221/api/readings/billcycles';
 const GET_READINGS_API = 'https://localhost:7221/api/readings/GetReadings';
 
+/** Map API response to table row shape (support both camelCase and PascalCase from .NET) */
+function normalizeReadingRow(raw) {
+  if (!raw || typeof raw !== 'object') return raw;
+  return {
+    accountNumber: raw.accountNumber ?? raw.AccountNumber,
+    addedBillCycle: raw.addedBillCycle ?? raw.AddedBillCycle,
+    meterNumber: raw.meterNumber ?? raw.MeterNumber,
+    kwhTot: raw.kwhTot ?? raw.KwhTot,
+    kwhR1: raw.kwhR1 ?? raw.KwhR1,
+    kwhR2: raw.kwhR2 ?? raw.KwhR2,
+    kwhR3: raw.kwhR3 ?? raw.KwhR3,
+    kwhExpTot: raw.kwhExpTot ?? raw.KwhExpTot,
+    kwhR1Exp: raw.kwhR1Exp ?? raw.KwhR1Exp,
+    kwhR2Exp: raw.kwhR2Exp ?? raw.KwhR2Exp,
+    kwhR3Exp: raw.kwhR3Exp ?? raw.KwhR3Exp,
+    kvarhTot: raw.kvarhTot ?? raw.KvarhTot,
+    kvarhR1: raw.kvarhR1 ?? raw.KvarhR1,
+    kvarhR2: raw.kvarhR2 ?? raw.KvarhR2,
+    kvarhR3: raw.kvarhR3 ?? raw.KvarhR3,
+    kvarhExpTot: raw.kvarhExpTot ?? raw.KvarhExpTot,
+    kvarhR1Exp: raw.kvarhR1Exp ?? raw.KvarhR1Exp,
+    kvarhR2Exp: raw.kvarhR2Exp ?? raw.KvarhR2Exp,
+    kvarhR3Exp: raw.kvarhR3Exp ?? raw.KvarhR3Exp,
+  };
+}
+
 const ACCOUNT_ERROR_MSG = 'Account number must be a 10 digit number';
 
 export default function ReadingDetails() {
@@ -93,7 +119,7 @@ export default function ReadingDetails() {
         },
       });
       const data = Array.isArray(res.data) ? res.data : [];
-      setRows(data);
+      setRows(data.map(normalizeReadingRow));
     } catch (e) {
       setError('Failed to fetch readings. Please try again.');
     } finally {
