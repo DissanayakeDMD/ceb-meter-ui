@@ -15,11 +15,13 @@ const numericColumn = (field, headerName, minWidth) => ({
   flex: 1,
   minWidth,
   type: 'number',
-  valueGetter: (value, row) => {
-    const v = row?.[field];
-    return v === undefined || v === null ? '' : Number(v);
+  valueGetter: (params) => {
+    const v = params?.row?.[field];
+    if (v === undefined || v === null || v === '') return null;
+    const num = Number(v);
+    return Number.isNaN(num) ? null : num;
   },
-  valueFormatter: ({ value }) => decimalFormatter(value),
+  valueFormatter: (params) => decimalFormatter(params?.value),
 });
 
 const COLUMN_DEFS = [
