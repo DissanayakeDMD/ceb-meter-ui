@@ -15,7 +15,7 @@ const numericColumn = (field, headerName, minWidth) => ({
   flex: 1,
   minWidth,
   type: 'number',
-  valueGetter: ({ row }) => {
+  valueGetter: (value, row) => {
     const v = row?.[field];
     return v === undefined || v === null ? '' : Number(v);
   },
