@@ -7,11 +7,22 @@ const numericColumn = (field, headerName, minWidth) => ({
   headerName,
   flex: 1,
   minWidth,
-  valueFormatter: (params) => {
-    const value = params.value;
-    if (value === null || value === undefined || value === '') return '';
+  align: "right",
+  headerAlign: "right",
+  renderCell: (params) => {
+    const value = params.row[field];
+
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
     const num = Number(value);
-    return Number.isNaN(num) ? '' : num.toFixed(3);
+    if (Number.isNaN(num)) return '';
+
+    return num.toLocaleString(undefined, {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
   },
 });
 
@@ -49,7 +60,7 @@ export default function ReadingTable({ rows }) {
       })),
     [rows]
   );
-
+  console.log(rowsWithId);
   return (
     <Box sx={{ width: '100%', minHeight: 400 }}>
       <DataGrid
@@ -60,6 +71,29 @@ export default function ReadingTable({ rows }) {
         initialState={{
           pagination: {
             paginationModel: { pageSize: 10, page: 0 },
+          },
+          columns: {
+            columnVisibilityModel: {
+              accountNumber: true,
+              addedBillCycle: true,
+              meterNumber: true,
+              kwhTot: true,
+              kwhR1: true,
+              kwhR2: true,
+              kwhR3: true,
+              kwhExpTot: false,
+              kwhR1Exp: false,
+              kwhR2Exp: false,
+              kwhR3Exp: false,
+              kvarhTot: false,
+              kvarhR1: false,
+              kvarhR2: false,
+              kvarhR3: false,
+              kvarhExpTot: false,
+              kvarhR1Exp: false,
+              kvarhR2Exp: false,
+              kvarhR3Exp: false,
+            },
           },
         }}
         pageSizeOptions={[10]}
