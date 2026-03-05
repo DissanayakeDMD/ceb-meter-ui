@@ -7,7 +7,6 @@ const numericColumn = (field, headerName, minWidth) => ({
   headerName,
   flex: 1,
   minWidth,
-  type: 'number',
   valueFormatter: (params) => {
     const value = params.value;
     if (value === null || value === undefined || value === '') return '';
