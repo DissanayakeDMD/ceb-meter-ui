@@ -2,26 +2,18 @@ import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
-const decimalFormatter = (value) => {
-  if (value === null || value === undefined || value === '') return '';
-  const num = Number(value);
-  if (Number.isNaN(num)) return value;
-  return num.toFixed(3);
-};
-
 const numericColumn = (field, headerName, minWidth) => ({
   field,
   headerName,
   flex: 1,
   minWidth,
   type: 'number',
-  valueGetter: (params) => {
-    const v = params?.row?.[field];
-    if (v === undefined || v === null || v === '') return null;
-    const num = Number(v);
-    return Number.isNaN(num) ? null : num;
+  valueFormatter: (params) => {
+    const value = params.value;
+    if (value === null || value === undefined || value === '') return '';
+    const num = Number(value);
+    return Number.isNaN(num) ? '' : num.toFixed(3);
   },
-  valueFormatter: (params) => decimalFormatter(params?.value),
 });
 
 const COLUMN_DEFS = [
