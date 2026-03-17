@@ -16,6 +16,30 @@ import {
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
+const readingNumericColumn = (field, headerName, minWidth) => ({
+  field,
+  headerName,
+  flex: 1,
+  minWidth,
+  align: 'right',
+  headerAlign: 'right',
+  renderCell: (params) => {
+    const value = params.row[field];
+
+    if (value === null || value === undefined || value === '') {
+      return '';
+    }
+
+    const num = Number(value);
+    if (Number.isNaN(num)) return '';
+
+    return num.toLocaleString(undefined, {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    });
+  },
+});
+
 const FAILED_COLUMNS = [
   { field: 'accountNumber', headerName: 'Account Number', flex: 1, minWidth: 140 },
   { field: 'meterNumber', headerName: 'Meter Number', flex: 1, minWidth: 140 },
@@ -105,8 +129,8 @@ export default function FailedReadingTable() {
       const result = response.data?.result?.[0];
 
       if (!result || result.reading_status !== 'success') {
-        setReadingStatus('failed');
-        setReadingReason('No Readings');
+        setReadingStatus(result?.reading_status || 'failed');
+        setReadingReason(result?.message || 'No Readings');
         setReadingData(null);
       } else {
         setReadingStatus('success');
@@ -227,7 +251,7 @@ export default function FailedReadingTable() {
             </Box>
           ) : (
             <Box sx={{ mt: 1 }}>
-              {readingStatus === 'failed' && (
+              {readingStatus && readingStatus !== 'success' && (
                 <Alert severity="warning" sx={{ mb: 2 }}>
                   <Typography variant="subtitle1" fontWeight="bold">
                     Readings for Account {selectedContext.accountNumber}
@@ -334,7 +358,9 @@ export default function FailedReadingTable() {
                         <Typography fontWeight="bold" gutterBottom>
                           Import
                         </Typography>
-                        <Typography>max_dmnd: {readingData.max_dmnd}</Typography>
+                        <Typography>
+                          max_dmnd: {readingData.max_dmnd}
+                        </Typography>
                         <Typography>
                           max_dmnd_Time: {readingData.max_dmnd_Time}
                         </Typography>
