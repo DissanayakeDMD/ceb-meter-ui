@@ -78,6 +78,9 @@ export default function FailedReadingTable() {
   const [readingStatus, setReadingStatus] = useState(null);
   const [readingData, setReadingData] = useState(null);
   const [readingReason, setReadingReason] = useState(null);
+  const [sendLoading, setSendLoading] = useState(false);
+  const [sendError, setSendError] = useState(null);
+  const [sendSuccess, setSendSuccess] = useState(false);
 
   useEffect(() => {
     const fetchFailedReadings = async () => {
@@ -113,6 +116,9 @@ export default function FailedReadingTable() {
     setReadingStatus(null);
     setReadingData(null);
     setReadingReason(null);
+    setSendLoading(false);
+    setSendError(null);
+    setSendSuccess(false);
 
     try {
       const response = await axios.post(
@@ -155,6 +161,33 @@ export default function FailedReadingTable() {
     setReadingStatus(null);
     setReadingData(null);
     setReadingReason(null);
+    setSendLoading(false);
+    setSendError(null);
+    setSendSuccess(false);
+  };
+
+  const handleSendReading = async () => {
+    if (!readingData || readingStatus !== 'success') return;
+
+    setSendLoading(true);
+    setSendError(null);
+    setSendSuccess(false);
+
+    try {
+      await axios.post('https://localhost:7221/api/readings/SaveHesReading', {
+        accountNumber: selectedContext.accountNumber,
+        meterNumber: selectedContext.meterNumber,
+        billCycle: selectedContext.billCycle,
+        ...readingData,
+      });
+      setSendSuccess(true);
+    } catch (err) {
+      setSendError('Failed to send readings to backend.');
+      // eslint-disable-next-line no-console
+      console.error(err);
+    } finally {
+      setSendLoading(false);
+    }
   };
 
   const failedTableRows = useMemo(
@@ -233,6 +266,16 @@ export default function FailedReadingTable() {
           {selectedContext.meterNumber} (Bill Cycle {selectedContext.billCycle})
         </DialogTitle>
         <DialogContent dividers>
+          {sendError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {sendError}
+            </Alert>
+          )}
+          {sendSuccess && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              Readings have been sent to backend successfully.
+            </Alert>
+          )}
           {dialogError && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {dialogError}
@@ -384,6 +427,16 @@ export default function FailedReadingTable() {
           )}
         </DialogContent>
         <DialogActions>
+          {readingStatus === 'success' && readingData && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSendReading}
+              disabled={sendLoading}
+            >
+              {sendLoading ? 'Sending...' : 'Send Readings'}
+            </Button>
+          )}
           <Button onClick={handleDialogClose}>Close</Button>
         </DialogActions>
       </Dialog>
