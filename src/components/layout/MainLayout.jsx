@@ -13,7 +13,7 @@ function MainLayout({ children }) {
           minWidth: 0,
           p: 3,
           minHeight: "100vh",
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "background.default",
         }}
       >
         {children}
