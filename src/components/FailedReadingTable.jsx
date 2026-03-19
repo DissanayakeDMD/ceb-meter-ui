@@ -108,7 +108,7 @@ export default function FailedReadingTable() {
   }, []);
 
   const handleGetReading = async (row) => {
-    const { billCycle, accountNumber, meterNumber } = row;
+    const { billCycle, billMonth, accountNumber, meterNumber } = row;
     setSelectedContext({ billCycle, accountNumber, meterNumber });
     setDialogOpen(true);
     setDialogLoading(true);
@@ -126,9 +126,7 @@ export default function FailedReadingTable() {
         {
           meterNumber,
           accountNumber,
-          year: 2026,
-          month: 2,
-          date: 28,
+          yearMonth: billMonth
         }
       );
 
