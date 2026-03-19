@@ -73,6 +73,7 @@ function Sidebar() {
           borderRight: "1px solid",
           borderColor: "divider",
           backgroundColor: "background.paper",
+          overflowY: "auto",
         },
       }}
     >
@@ -93,7 +94,7 @@ function Sidebar() {
 
       <Divider />
 
-      <List sx={{ px: 1.5, py: 2 }}>
+      <List sx={{ px: 1, py: 1 }}>
         {menuConfig.map((parent) => {
           const isChildActive = parent.children.some((c) => isPathActive(c.path));
           const isOpen =
@@ -102,13 +103,15 @@ function Sidebar() {
               : isChildActive;
 
           return (
-            <Box key={parent.label} sx={{ mb: 0.5 }}>
+            <Box key={parent.label} sx={{ mb: 0.25 }}>
               <ListItem disablePadding>
                 <ListItemButton
                   onClick={() => handleToggle(parent.label)}
                   selected={isChildActive}
                   sx={{
-                    borderRadius: 2,
+                    borderRadius: 1.5,
+                    px: 1.25,
+                    py: 0.6,
                     "&.Mui-selected": {
                       backgroundColor: "primary.main",
                       color: "primary.contrastText",
@@ -133,7 +136,7 @@ function Sidebar() {
                     primary={parent.label}
                     primaryTypographyProps={{
                       fontWeight: isChildActive ? 600 : 500,
-                      fontSize: "0.9375rem",
+                      fontSize: "0.86rem",
                     }}
                   />
                   {isOpen ? <ExpandLess /> : <ExpandMore />}
@@ -145,14 +148,16 @@ function Sidebar() {
                   {parent.children.map((child) => {
                     const childActive = isPathActive(child.path);
                     return (
-                      <ListItem key={child.path} disablePadding sx={{ mb: 0.25 }}>
+                      <ListItem key={child.path} disablePadding sx={{ mb: 0.15 }}>
                         <ListItemButton
                           component={Link}
                           to={child.path}
                           selected={childActive}
                           sx={{
-                            borderRadius: 2,
-                            ml: 4.5,
+                            borderRadius: 1.5,
+                            ml: 3.5,
+                            pr: 1.5,
+                            py: 0.45,
                             "&.Mui-selected": {
                               backgroundColor: "primary.main",
                               color: "primary.contrastText",
@@ -164,7 +169,7 @@ function Sidebar() {
                             primary={child.label}
                             primaryTypographyProps={{
                               fontWeight: childActive ? 600 : 500,
-                              fontSize: "0.9rem",
+                              fontSize: "0.8rem",
                             }}
                           />
                         </ListItemButton>
