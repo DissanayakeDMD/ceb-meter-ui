@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Drawer,
   List,
@@ -8,23 +9,57 @@ import {
   Box,
   Divider,
   Typography,
+  Collapse,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SpeedIcon from "@mui/icons-material/Speed";
 import EditIcon from "@mui/icons-material/Edit";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Link, useLocation } from "react-router-dom";
 import cebLogo from "../../assets/ceb-logo.png";
 
 const drawerWidth = 260;
 
-const menuItems = [
-  { path: "/", label: "Process Details", icon: <DashboardIcon /> },
-  { path: "/reading", label: "Reading Details", icon: <SpeedIcon /> },
-  { path: "/manual", label: "Manual Readings", icon: <EditIcon /> },
+const menuConfig = [
+  {
+    label: "Process Details",
+    icon: <DashboardIcon />,
+    children: [
+      { label: "Ordinary", path: "/process/ordinary-colombo" },
+      { label: "Bulk", path: "/process/bulk" },
+      { label: "Bess", path: "/process/bess" },
+    ],
+  },
+  {
+    label: "Reading Details",
+    icon: <SpeedIcon />,
+    children: [
+      { label: "Ordinary", path: "/reading/ordinary" },
+      { label: "Bulk", path: "/reading/bulk" },
+      { label: "Bess", path: "/reading/bess" },
+    ],
+  },
+  {
+    label: "Manual Readings",
+    icon: <EditIcon />,
+    children: [
+      { label: "Ordinary", path: "/manual/ordinary" },
+      { label: "Bulk", path: "/manual/bulk" },
+      { label: "Bess", path: "/manual/bess" },
+    ],
+  },
 ];
 
 function Sidebar() {
   const location = useLocation();
+  const [openStates, setOpenStates] = useState({});
+
+  const handleToggle = (label) => {
+    setOpenStates((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
+
+  const isPathActive = (path) => location.pathname === path;
 
   return (
     <Drawer
@@ -59,45 +94,86 @@ function Sidebar() {
       <Divider />
 
       <List sx={{ px: 1.5, py: 2 }}>
-        {menuItems.map(({ path, label, icon }) => {
-          const isActive = location.pathname === path;
+        {menuConfig.map((parent) => {
+          const isChildActive = parent.children.some((c) => isPathActive(c.path));
+          const isOpen =
+            openStates[parent.label] !== undefined
+              ? openStates[parent.label]
+              : isChildActive;
+
           return (
-            <ListItem key={path} disablePadding sx={{ mb: 0.5 }}>
-              <ListItemButton
-                component={Link}
-                to={path}
-                selected={isActive}
-                sx={{
-                  borderRadius: 2,
-                  "&.Mui-selected": {
-                    backgroundColor: "primary.main",
-                    color: "primary.contrastText",
-                    "&:hover": {
-                      backgroundColor: "primary.dark",
-                    },
-                    "& .MuiListItemIcon-root": {
-                      color: "primary.contrastText",
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon
+            <Box key={parent.label} sx={{ mb: 0.5 }}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => handleToggle(parent.label)}
+                  selected={isChildActive}
                   sx={{
-                    minWidth: 40,
-                    color: isActive ? "primary.contrastText" : "action.active",
+                    borderRadius: 2,
+                    "&.Mui-selected": {
+                      backgroundColor: "primary.main",
+                      color: "primary.contrastText",
+                      "&:hover": { backgroundColor: "primary.dark" },
+                      "& .MuiListItemIcon-root": {
+                        color: "primary.contrastText",
+                      },
+                    },
                   }}
                 >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={label}
-                  primaryTypographyProps={{
-                    fontWeight: isActive ? 600 : 500,
-                    fontSize: "0.9375rem",
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 40,
+                      color: isChildActive
+                        ? "primary.contrastText"
+                        : "action.active",
+                    }}
+                  >
+                    {parent.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={parent.label}
+                    primaryTypographyProps={{
+                      fontWeight: isChildActive ? 600 : 500,
+                      fontSize: "0.9375rem",
+                    }}
+                  />
+                  {isOpen ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+
+              <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {parent.children.map((child) => {
+                    const childActive = isPathActive(child.path);
+                    return (
+                      <ListItem key={child.path} disablePadding sx={{ mb: 0.25 }}>
+                        <ListItemButton
+                          component={Link}
+                          to={child.path}
+                          selected={childActive}
+                          sx={{
+                            borderRadius: 2,
+                            ml: 4.5,
+                            "&.Mui-selected": {
+                              backgroundColor: "primary.main",
+                              color: "primary.contrastText",
+                              "&:hover": { backgroundColor: "primary.dark" },
+                            },
+                          }}
+                        >
+                          <ListItemText
+                            primary={child.label}
+                            primaryTypographyProps={{
+                              fontWeight: childActive ? 600 : 500,
+                              fontSize: "0.9rem",
+                            }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Collapse>
+            </Box>
           );
         })}
       </List>
