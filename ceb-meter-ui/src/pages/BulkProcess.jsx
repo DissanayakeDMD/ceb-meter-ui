@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import ProcessTableBulk from "../components/ProcessTableBulk";
 
 function BulkProcess() {
   return (
@@ -6,7 +7,7 @@ function BulkProcess() {
       <Typography variant="h5" gutterBottom>
         Bulk Process Details
       </Typography>
-      {/* TODO: implement bulk process table/content */}
+      <ProcessTableBulk />
     </Box>
   );
 }
