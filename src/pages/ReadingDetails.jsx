@@ -11,6 +11,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Stack,
   TextField,
 } from '@mui/material';
 import ReadingTable from '../components/ReadingTable';
@@ -20,7 +21,7 @@ const GET_READINGS_API = 'https://localhost:7221/api/readings/GetReadings';
 
 /** Map API response to table row shape (support both camelCase and PascalCase from .NET) */
 function normalizeReadingRow(raw) {
-  debugger;
+  
   if (!raw || typeof raw !== 'object') return raw;
   return {
     accountNumber: raw.accountNumber ?? raw.AccountNumber,
@@ -133,72 +134,84 @@ export default function ReadingDetails() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Paper elevation={2} sx={{ p: 2 }}>
-            <Grid container spacing={2} alignItems="flex-start">
-              <Grid item xs={12} sm={4} md={3}>
-                <FormControl fullWidth size="small" disabled={billCyclesLoading}>
-                  <InputLabel id="bill-month-select-label">Bill Month</InputLabel>
-                  <Select
-                    labelId="bill-month-select-label"
-                    label="Bill Month"
-                    value={selectedBillCycle === '' ? '' : selectedBillCycle}
-                    onChange={(e) => setSelectedBillCycle(e.target.value)}
-                  >
-                    {billCycles.map((item) => (
-                      <MenuItem key={item.billCycle} value={item.billCycle}>
-                        {item.billMonth}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={4} md={3}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Account Number"
-                  value={accountNumber}
-                  onChange={handleAccountChange}
-                  error={Boolean(accountError)}
-                  helperText={accountError}
-                  inputProps={{ maxLength: 10, inputMode: 'numeric' }}
-                  placeholder="All"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4} md={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleSearch}
-                  disabled={loading || billCyclesLoading}
+      {/* Stack forces filters above table at all breakpoints (no side‑by‑side layout). */}
+      <Stack spacing={2} sx={{ width: '100%', alignItems: 'stretch' }}>
+        <Paper
+          elevation={2}
+          sx={{
+            p: 2,
+            width: '100%',
+            flexShrink: 0,
+          }}
+        >
+          <Grid container spacing={2} alignItems="flex-start">
+            <Grid size={{ xs: 12, sm: 4, md: 3 }}>
+              <FormControl fullWidth size="small" disabled={billCyclesLoading}>
+                <InputLabel id="bill-month-select-label">Bill Month</InputLabel>
+                <Select
+                  labelId="bill-month-select-label"
+                  label="Bill Month"
+                  value={selectedBillCycle === '' ? '' : selectedBillCycle}
+                  onChange={(e) => setSelectedBillCycle(e.target.value)}
                 >
-                  Search
-                </Button>
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={2} sx={{ display: 'flex', alignItems: 'center' }}>
-                {loading && <CircularProgress size={24} />}
-              </Grid>
+                  {billCycles.map((item) => (
+                    <MenuItem key={item.billCycle} value={item.billCycle}>
+                      {item.billMonth}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
 
-            {error ? (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {error}
-              </Alert>
-            ) : null}
-          </Paper>
-        </Grid>
+            <Grid size={{ xs: 12, sm: 4, md: 3 }}>
+              <TextField
+                fullWidth
+                size="small"
+                label="Account Number"
+                value={accountNumber}
+                onChange={handleAccountChange}
+                error={Boolean(accountError)}
+                helperText={accountError}
+                inputProps={{ maxLength: 10, inputMode: 'numeric' }}
+                placeholder="All"
+              />
+            </Grid>
 
-        <Grid item xs={12}>
-          <Paper elevation={2} sx={{ p: 2 }}>
-            <ReadingTable rows={rows} />
-          </Paper>
-        </Grid>
-      </Grid>
+            <Grid size={{ xs: 12, sm: 4, md: 'auto' }} sx={{ minWidth: { sm: 120 } }}>
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={handleSearch}
+                disabled={loading || billCyclesLoading}
+              >
+                Search
+              </Button>
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 12, md: 'grow' }} sx={{ display: 'flex', alignItems: 'center' }}>
+              {loading && <CircularProgress size={24} />}
+            </Grid>
+          </Grid>
+
+          {error ? (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {error}
+            </Alert>
+          ) : null}
+        </Paper>
+
+        <Paper
+          elevation={2}
+          sx={{
+            p: 2,
+            width: '100%',
+            minWidth: 0,
+            flex: '1 1 auto',
+          }}
+        >
+          <ReadingTable rows={rows} />
+        </Paper>
+      </Stack>
     </Box>
   );
 }
