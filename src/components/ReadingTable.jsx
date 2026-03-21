@@ -60,7 +60,7 @@ export default function ReadingTable({ rows }) {
       })),
     [rows]
   );
-  console.log(rowsWithId);
+
   return (
     <Box sx={{ width: '100%', minHeight: 400 }}>
       <DataGrid
