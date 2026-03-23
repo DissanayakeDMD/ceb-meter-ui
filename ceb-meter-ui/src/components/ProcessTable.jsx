@@ -67,7 +67,7 @@ const ProcessTable = () => {
       setLoading(true);
       setError("");
       try {
-        const res = await axios.get("https://localhost:7221/api/process");
+        const res = await axios.get("https://localhost:7221/api/process/GetLastFive");
         if (!cancelled) {
           setRows(res.data || []);
         }
