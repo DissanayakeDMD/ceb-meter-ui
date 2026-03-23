@@ -1,9 +1,22 @@
 import React from "react";
-import ManualReadings from "./ManualReadings";
+import { Box, Grid, Typography } from "@mui/material";
+import FailedBulkReadingsTable from "../components/FailedBulkReadingsTable";
 
-// For now reuse the ManualReadings screen for Bulk.
 function ManualBulk() {
-  return <ManualReadings />;
+  return (
+    <Box sx={{ p: 2 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Manual Readings - Bulk
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <FailedBulkReadingsTable />
+        </Grid>
+      </Grid>
+    </Box>
+  );
 }
 
 export default ManualBulk;
