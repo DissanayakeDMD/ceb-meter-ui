@@ -134,7 +134,6 @@ export default function ReadingDetails() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {/* Stack forces filters above table at all breakpoints (no side‑by‑side layout). */}
       <Stack spacing={2} sx={{ width: '100%', alignItems: 'stretch' }}>
         <Paper
           elevation={2}
@@ -145,52 +144,55 @@ export default function ReadingDetails() {
           }}
         >
           <Grid container spacing={2} alignItems="flex-start">
-            <Grid size={{ xs: 12, sm: 4, md: 3 }}>
-              <FormControl fullWidth size="small" disabled={billCyclesLoading}>
-                <InputLabel id="bill-month-select-label">Bill Month</InputLabel>
-                <Select
-                  labelId="bill-month-select-label"
-                  label="Bill Month"
-                  value={selectedBillCycle === '' ? '' : selectedBillCycle}
-                  onChange={(e) => setSelectedBillCycle(e.target.value)}
+              <Grid size={{ xs: 12, sm: 4, md: 3 }}>
+                <FormControl fullWidth size="small" disabled={billCyclesLoading}>
+                  <InputLabel id="bill-month-select-label">Bill Month</InputLabel>
+                  <Select
+                    labelId="bill-month-select-label"
+                    label="Bill Month"
+                    value={selectedBillCycle === '' ? '' : selectedBillCycle}
+                    onChange={(e) => setSelectedBillCycle(e.target.value)}
+                  >
+                    {billCycles.map((item) => (
+                      <MenuItem key={item.billCycle} value={item.billCycle}>
+                        {item.billMonth}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid size={{ xs: 12, sm: 4, md: 3 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  label="Account Number"
+                  value={accountNumber}
+                  onChange={handleAccountChange}
+                  error={Boolean(accountError)}
+                  helperText={accountError}
+                  inputProps={{ maxLength: 10, inputMode: 'numeric' }}
+                  placeholder="All"
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, sm: 4, md: 'auto' }} sx={{ minWidth: { sm: 120 } }}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={handleSearch}
+                  disabled={loading || billCyclesLoading}
                 >
-                  {billCycles.map((item) => (
-                    <MenuItem key={item.billCycle} value={item.billCycle}>
-                      {item.billMonth}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+                  Search
+                </Button>
+              </Grid>
 
-            <Grid size={{ xs: 12, sm: 4, md: 3 }}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Account Number"
-                value={accountNumber}
-                onChange={handleAccountChange}
-                error={Boolean(accountError)}
-                helperText={accountError}
-                inputProps={{ maxLength: 10, inputMode: 'numeric' }}
-                placeholder="All"
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 4, md: 'auto' }} sx={{ minWidth: { sm: 120 } }}>
-              <Button
-                variant="contained"
-                fullWidth
-                onClick={handleSearch}
-                disabled={loading || billCyclesLoading}
+              <Grid
+                size={{ xs: 12, sm: 12, md: 'grow' }}
+                sx={{ display: 'flex', alignItems: 'center' }}
               >
-                Search
-              </Button>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 12, md: 'grow' }} sx={{ display: 'flex', alignItems: 'center' }}>
-              {loading && <CircularProgress size={24} />}
-            </Grid>
+                {loading && <CircularProgress size={24} />}
+              </Grid>
           </Grid>
 
           {error ? (
